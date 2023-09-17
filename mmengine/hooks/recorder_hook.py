@@ -205,9 +205,9 @@ class RecorderHook(Hook):
 
     def __init__(
         self,
-        recorders: Optional[List[Dict]] = None,
+        recorders: List[Dict],
+        save_dir: str,
         print_modification: bool = True,
-        save_dir: str = None,
         filename_tmpl: Optional[str] = None,
     ):
         self.tensor_dict: Dict[str, Any] = {}
@@ -231,11 +231,9 @@ class RecorderHook(Hook):
                 recorder['method'] = 'forward'
 
             if target is None:
-                print_log(
+                raise ValueError(
                     '`RecorderHook` cannot be initialized '
-                    'because recorder has no target',
-                    logger='current',
-                    level=logging.WARNING)
+                    'because recorder has no target')
             self._recorders.append(RECORDERS.build(recorder))
 
     def _modify_forward_func(self, func, recorders):
